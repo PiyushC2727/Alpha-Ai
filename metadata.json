@@ -1,0 +1,6 @@
+{
+  "name": "Alpha AI",
+  "description": "An advanced Personal AI Operating System acting as a unified interface for ChatGPT, Claude, Gemini, and Perplexity with multi-agent intelligence.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
