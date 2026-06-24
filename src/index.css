@@ -1,53 +1,245 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
+:root {
+  --bg-base: #09090b;
+  --bg-surface: #18181b;
+  --bg-elevated: #27272a;
+  --border: #3f3f46;
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --accent: #8b5cf6;
+  --accent-hover: #7c3aed;
+  --accent-glow: rgba(139, 92, 246, 0.3);
+  --cyan: #06b6d4;
+  --green: #22c55e;
+  --red: #ef4444;
+}
+
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-bg-base: var(--bg-base);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-border-subtle: var(--border);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-accent-primary: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-cyan-brand: var(--cyan);
+  --color-green-brand: var(--green);
+  --color-red-brand: var(--red);
 }
 
-/* Base resets & Clean Minimalism styles */
 html, body {
-  background-color: #0A0A0A;
-  color: #E5E5E5;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
   font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
-.dark {
-  background-color: #0A0A0A;
-  color: #E5E5E5;
+#root {
+  height: 100%;
+  width: 100%;
 }
 
-/* Customized scrollbar modifiers for seamless desktop rail scrolling */
-.scrollbar-thin::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+/* Custom selection */
+::selection {
+  background-color: var(--accent);
+  color: #ffffff;
 }
 
-.scrollbar-thin::-webkit-scrollbar-track {
-  background: transparent;
+/* Customized scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #d4d4d4;
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
   border-radius: 9999px;
 }
 
-.dark .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #262626;
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Animations */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+@keyframes cursorPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
-/* Subtle animation constants */
-.animate-spin-slow {
-  animation: spin 8s linear infinite;
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-slide-up {
+  animation: fadeSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-cursor-pulse {
+  animation: cursorPulse 1s infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, #18181b 25%, #27272a 50%, #18181b 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.animate-spin-fast {
+  animation: spin 0.6s linear infinite;
+}
+
+/* Markdown Styling */
+.markdown-body {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.markdown-body p {
+  margin-bottom: 0.85rem;
+}
+
+.markdown-body p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 1.5rem;
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.015em;
+}
+
+.markdown-body h1 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.3rem;
+}
+
+.markdown-body h2 {
+  font-size: 1.25rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.2rem;
+}
+
+.markdown-body h3 {
+  font-size: 1.125rem;
+}
+
+.markdown-body ul, .markdown-body ol {
+  margin-bottom: 0.85rem;
+  padding-left: 1.5rem;
+}
+
+.markdown-body ul {
+  list-style-type: disc;
+}
+
+.markdown-body ol {
+  list-style-type: decimal;
+}
+
+.markdown-body li {
+  margin-bottom: 0.35rem;
+}
+
+.markdown-body code {
+  font-family: var(--font-mono);
+  font-size: 0.825em;
+  background-color: var(--bg-elevated);
+  padding: 0.15em 0.35em;
+  border-radius: 0.25rem;
+  color: var(--text-primary);
+}
+
+.markdown-body pre {
+  margin-top: 0.85rem;
+  margin-bottom: 0.85rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.markdown-body pre code {
+  display: block;
+  padding: 1rem;
+  background-color: #0d0d0d;
+  color: var(--text-primary);
+  overflow-x: auto;
+  font-size: 0.875rem;
+}
+
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0.85rem;
+}
+
+.markdown-body th, .markdown-body td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.markdown-body th {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.markdown-body tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.markdown-body blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0.85rem;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.markdown-body a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.markdown-body img {
+  border-radius: 0.375rem;
+  max-width: 100%;
+  height: auto;
+}

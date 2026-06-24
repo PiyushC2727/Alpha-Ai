@@ -1,101 +1,94 @@
-export interface Subtask {
-  id: string;
-  title: string;
-  agent: 'GPT-4o' | 'Claude 3.5' | 'Gemini 2.5' | 'Gemini 3.1' | 'DeepSeek R1' | 'Grok 2' | 'Perplexity' | string;
-  status: 'pending' | 'processing' | 'done' | 'failed';
-  output?: string;
-  explanation: string;
-}
-
-export interface OrchestrationDetail {
-  subtasks: Subtask[];
-  synthesizedResponse: string;
-  usedModels: string[];
-  thinkingTimeMs: number;
-}
-
-export interface ModelResponse {
-  modelId: string;
-  modelName: string;
-  content: string;
-  status: 'pending' | 'done' | 'failed';
-  durationMs?: number;
-}
-
 export interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
-  timestamp: string;
-  isOrchestrated?: boolean;
-  orchestration?: OrchestrationDetail;
-  activeModelId?: string; // For direct model responses
-  isComparison?: boolean; // True if message contains multi-model parallel answers
-  responses?: ModelResponse[]; // Grid of comparisons
-  attachedFiles?: Array<{
-    name: string;
-    size: string;
-    type: string;
-    content?: string;
-  }>;
-  inferredMemories?: Array<{
-    content: string;
-    category: 'preference' | 'identity' | 'project' | 'technical' | 'other';
-    reason: string;
-  }>;
+  streamingContent?: string;      // live streaming buffer
+  isStreaming?: boolean;           // true while tokens arriving
+  modelUsed?: string[];
+  subtasks?: Subtask[];
+  isComparison?: boolean;
+  compareResponses?: CompareResponse[];
+  thinkingTimeMs?: number;
+  timestamp: Date;
+  attachments?: Attachment[];
+  tokenCount?: number;
+  isError?: boolean;
 }
 
-export interface ChatSession {
+export interface Subtask {
   id: string;
   title: string;
-  createdAt: string;
+  agent: string;
+  status: 'done' | 'failed' | 'running';
+  explanation: string;
+  output: string;
+}
+
+export interface CompareResponse {
+  modelId: string;
+  modelName: string;
+  content: string;
+  status: 'done' | 'failed' | 'streaming';
+  durationMs: number;
+}
+
+export interface Conversation {
+  id: string;
+  title: string;
   messages: Message[];
-  sessionMode?: 'direct' | 'compare' | 'orchestrated';
-  activeModelId?: string; // sticky active single model
-  compareModels?: string[]; // sticky models chosen for comparison
+  createdAt: Date;
+  systemPrompt?: string;
 }
 
-export interface Memory {
+export interface Attachment {
+  name: string;
+  type: string;
+  base64: string;
+  preview?: string;
+}
+
+export interface ModelMetrics {
+  latencyMs: number;
+  successRate: number;
+  costScore: number;
+  intelligenceScore: number;
+  evalRating: number;
+  totalRequests: number;
+}
+
+export interface Toast {
   id: string;
-  content: string;
-  createdAt: string;
-  category: 'preference' | 'identity' | 'project' | 'technical' | 'other';
-  isAutoInferred?: boolean;
-  inferredReason?: string;
+  message: string;
+  type: 'success' | 'error' | 'info';
 }
 
-export interface KnowledgeDoc {
-  id: string;
-  title: string;
-  content: string;
-  fileType: string;
-  fileSize: string;
-  uploadedAt: string;
-  tokenCount: number;
-}
+export type ChatMode = 'auto' | 'direct' | 'compare';
 
-export interface RouterConfig {
-  mode: 'auto' | 'intelligence' | 'speed' | 'custom';
-  openRouterKey?: string;
-  selectedModels: string[];
-  weights: {
-    'GPT-4o': number;
-    'Claude 3.5': number;
-    'Gemini 2.5': number;
-    'DeepSeek R1': number;
-    'Grok 2': number;
-    'Perplexity': number;
-    'Gemini Nano'?: number;
-  };
-}
+export type ModelId = 
+  | 'GPT-4o' 
+  | 'Claude 3.5' 
+  | 'Gemini 2.5' 
+  | 'DeepSeek R1' 
+  | 'Grok 2' 
+  | 'Perplexity' 
+  | 'Gemini Nano';
 
-export interface RoutingMetric {
-  date: string;
-  'GPT-4o': number;
-  'Claude 3.5': number;
-  'Gemini 2.5': number;
-  'DeepSeek R1': number;
-  'Grok 2': number;
-  'Perplexity': number;
-  'Gemini Nano'?: number;
-}
+export const MODEL_COLORS: Record<string, string> = {
+  'GPT-4o':      '#10a37f',   // green
+  'Claude 3.5':  '#d97706',   // orange  
+  'Gemini 2.5':  '#3b82f6',   // blue
+  'DeepSeek R1': '#ef4444',   // red
+  'Grok 2':      '#eab308',   // yellow
+  'Perplexity':  '#8b5cf6',   // purple
+  'Gemini Nano': '#06b6d4',   // cyan
+};
+
+export const MODEL_DESCRIPTIONS: Record<string, string> = {
+  'GPT-4o':      'Best for writing, creativity, general tasks',
+  'Claude 3.5':  'Best for coding, reasoning, long documents',
+  'Gemini 2.5':  'Best for research, multimodal, large context',
+  'DeepSeek R1': 'Best for math, logic, deep reasoning',
+  'Grok 2':      'Best for real-time info, casual tasks',
+  'Perplexity':  'Best for web search, citations, research',
+  'Gemini Nano': 'Fastest, best for simple quick tasks',
+};
